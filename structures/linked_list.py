@@ -73,7 +73,7 @@ class DoublyLinkedList:
         via the str() method.
         """
         list = []
-        cursor = self.get_head()
+        cursor = self.get_head_node()
 
         while cursor is not None:
             list.append(str(cursor.get_data()))
@@ -129,10 +129,10 @@ class DoublyLinkedList:
         Return the data of the leftmost node in the list, if it exists.
         Time complexity for full marks: O(1)
         """
-        if self._reverse is not True:
-            return self._head
-        else:
-            return self._tail
+        data = None
+        if self.get_head_node() is not None:
+            data = self.get_head_node().get_data()
+        return data
 
     def set_head(self, data: Any) -> None:
         """
@@ -140,18 +140,18 @@ class DoublyLinkedList:
         If the list is empty, do nothing.
         Time complexity for full marks: O(1)
         """
-        if self.get_head() is not None: # Only set data if a node exists.
-            self.get_head().set_data(data)
+        if self.get_head_node() is not None: # Only set data if a node exists.
+            self.get_head_node().set_data(data)
 
     def get_tail(self) -> Any | None:
         """
         Return the data of the rightmost node in the list, if it exists.
         Time complexity for full marks: O(1)
         """
-        if self._reverse is not True:
-            return self._tail
-        else:
-            return self._head
+        data = None
+        if self.get_tail_node() is not None:
+            data = self.get_tail_node.get_data()
+        return data
 
     def set_tail(self, data: Any) -> None:
         """
@@ -159,8 +159,8 @@ class DoublyLinkedList:
         If the list is empty, do nothing.
         Time complexity for full marks: O(1)
         """
-        if self.get_tail() is not None: # Only set data if a node exists.
-            self.get_tail().set_data(data)
+        if self.get_tail_node() is not None: # Only set data if a node exists.
+            self.get_tail_node().set_data(data)
 
     def toggle_reverse_flag(self) -> None:
         """
@@ -180,7 +180,7 @@ class DoublyLinkedList:
         Time complexity for full marks: O(1)
         """
         newHead = Node(data)
-        oldHead = self.get_head()
+        oldHead = self.get_head_node()
 
         # Modify the previous head to reference the new head.
         if oldHead is not None:
@@ -203,7 +203,7 @@ class DoublyLinkedList:
         Time complexity for full marks: O(1)
         """
         newTail = Node(data)
-        oldTail = self.get_tail()
+        oldTail = self.get_tail_node()
 
         # Modify the previous tail to reference the new tail.
         if oldTail is not None:
@@ -227,8 +227,8 @@ class DoublyLinkedList:
         """
         data = None
 
-        if self.get_head() is not None:
-            oldHead = self.get_head()
+        if self.get_head_node() is not None:
+            oldHead = self.get_head_node()
 
             # Remove reference to original head.
             if oldHead.get_next() is not None:
@@ -261,8 +261,8 @@ class DoublyLinkedList:
         """
         data = None
 
-        if self.get_tail() is not None:
-            oldTail = self.get_tail()
+        if self.get_tail_node() is not None:
+            oldTail = self.get_tail_node()
 
             # Remove reference to original tail.
             if oldTail.get_prev(self._reverse) is not None:
@@ -294,7 +294,7 @@ class DoublyLinkedList:
         Time complexity for full marks: O(N)
         """
         elementFound = False
-        nodeCursor = self.get_head()
+        nodeCursor = self.get_head_node()
 
         # Loop through all nodes and see if data matches desired elem.
         while elementFound is not True and nodeCursor is not None: # Cursor = None = End
@@ -314,7 +314,7 @@ class DoublyLinkedList:
         Time complexity for full marks: O(N)
         """
         elementFound = False
-        nodeCursor = self.get_head()
+        nodeCursor = self.get_head_node()
 
         # Loop through all nodes and see if data matches desired elem.
         while elementFound is not True and nodeCursor is not None:
