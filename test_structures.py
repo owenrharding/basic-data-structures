@@ -148,6 +148,44 @@ def test_dynamic_array():
     arr.reverse()
     print(" -> Current array:", str(arr) + '\n')
 
+    atIndex = 2
+    print("Getting item at index", atIndex, "(while array is reversed)...")
+    print("  ->", arr.get_at(atIndex) + '\n')
+
+    newItem = 'x'
+    atIndex = 3
+    print("Setting item at index", atIndex, "to", newItem, "(while array is reversed)...")
+    arr.set_at(atIndex, newItem)
+    print("  -> Current array:", str(arr) + '\n') 
+
+    print("Reversing array back to unreversed...")
+    arr.reverse()
+    print(" -> Current array:", str(arr) + '\n')
+
+    newItem = '7'
+    atIndex = 5
+    print("Setting item at index", atIndex, "to", newItem, "...")
+    arr.set_at(atIndex, newItem)
+    print("  -> Current array:", str(arr) + '\n') 
+
+    newItem = 'z'
+    atIndex = 1
+    print("Setting item at index", atIndex, "to", newItem, "...")
+    arr[atIndex] = newItem
+    print("  -> Current array:", str(arr) + '\n') 
+
+    print("Reversing array...")
+    arr.reverse()
+    print(" -> Current array:", str(arr) + '\n')
+
+    print("Sorting array...")
+    arr.sort()
+    print(" -> Current array:", str(arr) + '\n')
+
+    print("Reversing array back to unreversed...")
+    arr.reverse()
+    print(" -> Current array:", str(arr) + '\n')
+
 def test_bitvector():
     """
     A simple set of tests for the bit vector implementation.

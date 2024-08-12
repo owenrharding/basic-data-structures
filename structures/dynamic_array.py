@@ -113,7 +113,9 @@ class DynamicArray:
         offsetIndex = index + self._start
         
         if offsetIndex >= self._start and offsetIndex <= self._end:
-            self._data[index] = element
+            self._data[offsetIndex] = element
+
+        return element
 
     def __setitem__(self, index: int, element: Any) -> None:
         """
@@ -126,7 +128,7 @@ class DynamicArray:
         offsetIndex = index + self._start
 
         if offsetIndex >= self._start and offsetIndex <= self._end:
-            self._data[index] = element
+            self._data[offsetIndex] = element
 
     def append(self, element: Any) -> None:
         """
