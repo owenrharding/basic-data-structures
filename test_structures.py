@@ -32,36 +32,72 @@ def test_linked_list():
     my_list = DoublyLinkedList()
     assert(my_list.get_size() == 0)
 
-    my_list.insert_to_front(Node("hello"))
-    my_list.insert_to_back(Node("algorithms"))
+    my_list.insert_to_front("hello")
+    assert(my_list.get_size() == 1)
+
+    my_list.insert_to_back("algorithms")
+    assert(my_list.get_size() == 2)
 
     # Have a look - we can do this due to overriding __str__ in the class
     print(str(my_list))
 
     # Now lets try to find a node
+    print("Searching for element containing \"algorithms\"...")
     elem = my_list.find_element("algorithms")
     if elem is not None:
-        print ("Found node with data = ", elem.get_data())
+        print ("Found node with data \"algorithms\"")
 
     # And try to delete one
+    print("Searching for element containing \"1337\"...")
     elem = my_list.find_and_remove_element("1337")
     if elem is not None:
-        print ("Deleted ", elem.get_data())
+        print ("Deleted node with data \"1337\"")
     else:
         print ("Didn't find element = 1337")
 
     # And try to delete another one
+    print("Searching for element containing \"hello\"...")
     elem = my_list.find_and_remove_element("hello")
     if elem is not None:
-        print ("Deleted ", elem.get_data())
+        print ("Deleted node with data \"hello\"")
     else:
-        print ("Didn't find element = world")
+        print ("Didn't find element = hello")
 
     # Have another look
     print(str(my_list))
 
     # OK, now check size
+    print("Checking list is size 1...")
     assert(my_list.get_size() == 1)
+
+    # Check reverse.
+    print("Checking reverse cases...")
+    print("Unreversed list:", str(my_list))
+    my_list.reverse()
+    print("Reversed list:", str(my_list))
+    my_list.reverse() # Return list to original state.
+
+    # Add to list to observe reversing.
+    my_list.insert_to_back("first")
+    my_list.insert_to_back("second")
+    my_list.insert_to_back("third")
+    print(str(my_list))
+
+    # Reverse and check.
+    my_list.reverse()
+    print("Reversed:", str(my_list))
+
+    # Check insert_to_front/back with reversal.
+    print("Inserting to front of reversed list...")
+    my_list.insert_to_front("Front")
+    print(str(my_list))
+
+    print("Inserting to back of reversed list...")
+    my_list.insert_to_back("Back")
+    print(str(my_list))
+
+    # Re-reverse and check insert_to_front/back.
+
 
 def test_dynamic_array():
     """
@@ -69,6 +105,42 @@ def test_dynamic_array():
     This is not marked and is just here for you to test your code.
     """
     print ("==== Executing Dynamic Array Tests ====")
+    
+##### INITIALISE TEST ##########################################################
+    print("Initialising Dynamic Array...")
+    arr = DynamicArray()
+    if arr is not None:
+        print("  -> Successfully initialised.")
+
+##### APPEND TEST ##############################################################
+    appending = ['a', 'b', 'c', 'd', 'e']
+    print("Appending the elements:", end=" ")
+    for element in appending:
+        if element is not appending[-1]:
+            print('\'' + element + '\',', end=" ")
+    print('\'' + appending[-1] + '\'...')
+    
+    for element in appending:
+        arr.append(element)
+        print("  -> Successfully appended", '\'' + element + '\'.')
+
+    print("Current array:")
+    print(str(arr))
+
+##### PREPEND TEST #############################################################
+    prepending = ['1', '2', '3']
+    print("Prepending the elements:", end=" ")
+    for element in prepending:
+        if element is not prepending[-1]:
+            print('\'' + element + '\',', end=" ")
+    print('\'' + prepending[-1] + '\'...')
+
+    for element in prepending:
+        arr.prepend(element)
+        print("  -> Successfully prepended", '\'' + element + '\'.')
+
+    print("Current array:")
+    print(str(arr))
 
 def test_bitvector():
     """

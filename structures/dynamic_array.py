@@ -10,30 +10,51 @@ INIT_CAPACITY = 8
 
 class DynamicArray:
     def __init__(self) -> None:
-        self._size = 0
         self._capacity = INIT_CAPACITY
+        self._start = INIT_CAPACITY // 2
+        self._end = self._start - 1
         self._data = [None] * INIT_CAPACITY
+        self._reverse = False
 
     def __str__(self) -> str:
         """
         A helper that allows you to print a DynamicArray type
         via the str() method.
         """
-        pass
+        currentArray = []
+        index = self._start
+        while index <= self._end:
+            currentArray.append(str(self._data[index]))
+            index += 1
+        return ', '.join(currentArray)
 
     def __resize(self) -> None:
+        """
+        Resizes array capacity to include more null space either size of the
+        logical array.
+        """
         # Double list capacity.
         self._capacity *= 2
 
         # Create a new (larger) list for old data to be copied into.
         dataCopy = [None] * self._capacity
 
-        # Copy data.
-        for index, element in enumerate(self._data):
-            dataCopy[index] = element
+        # Copy data leaving equal buffer room either side.
+        arraySize = self.get_size()
+        newStart = (self._capacity - arraySize) // 2
+        newEnd = newStart + arraySize - 1
+
+        index = newStart
+        oldArrCursor = 0
+        while index <= newEnd:
+            dataCopy[index] = self._data[self._start + oldArrCursor]
+            index += 1
+            oldArrCursor += 1
 
         # Set new DynamicArray data.
         self._data = dataCopy
+        self._start = newStart
+        self._end = newEnd
 
     def get_at(self, index: int) -> Any | None:
         """
@@ -42,9 +63,10 @@ class DynamicArray:
         Time complexity for full marks: O(1)
         """
         element = None
+        offsetIndex = index + self._start
 
-        if index < self._size:
-            element = self._data[index]
+        if offsetIndex >= self._start and offsetIndex <= self._end:
+            element = self._data[offsetIndex]
 
         return element
 
@@ -54,9 +76,10 @@ class DynamicArray:
         Allows to use square brackets to index elements.
         """
         element = None
+        offsetIndex = index + self._start
 
-        if index < self._size:
-            element = self._data[index]
+        if offsetIndex >= self._start and offsetIndex <= self._end:
+            element = self._data[offsetIndex]
 
         return element
 
@@ -66,7 +89,9 @@ class DynamicArray:
         Do not modify the list if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
-        if index < self._size:
+        offsetIndex = index + self._start
+        
+        if offsetIndex >= self._start and offsetIndex <= self._end:
             self._data[index] = element
 
     def __setitem__(self, index: int, element: Any) -> None:
@@ -74,7 +99,9 @@ class DynamicArray:
         Same as set_at.
         Allows to use square brackets to index elements.
         """
-        if index < self._size:
+        offsetIndex = index + self._start
+
+        if offsetIndex >= self._start and offsetIndex <= self._end:
             self._data[index] = element
 
     def append(self, element: Any) -> None:
@@ -87,24 +114,32 @@ class DynamicArray:
             self.__resize()
         
         # Set element at next available index.
-        self._data[self._size] = element
+        self._data[self._end + 1] = element
 
         # Increase array size.
-        self._size++
+        self._end += 1
 
     def prepend(self, element: Any) -> None:
         """
         Add an element to the front of the array.
         Time complexity for full marks: O(1*)
         """
-        pass
+        # Resize if there is no remaining space for element to be appended.
+        if self.is_full():
+            self.__resize()
+        
+        # Set element at next available index.
+        self._data[self._start - 1] = element
+
+        # Increase array size.
+        self._start -= 1
 
     def reverse(self) -> None:
         """
         Reverse the array.
         Time complexity for full marks: O(1)
         """
-        pass
+        self._reverse = not self._reverse
 
     def remove(self, element: Any) -> None:
         """
@@ -112,38 +147,43 @@ class DynamicArray:
         If there is no such element, leave the array unchanged.
         Time complexity for full marks: O(N)
         """
-        found = None
+        found = False
 
         # Iterate through data, comparing to given element.
-        for index, item in enumerate(self._data):
-            if item == element:
-                found = index
+        index = 0
+        while (index + self._start) <= self._end:
+            if self._data[index + self._start] == element:
+                found = True
+                break
+            index += 1
 
-        if found is not None:
+        if found:
             self.remove_at(index)
 
     def remove_at(self, index: int) -> Any | None:
         """
-        Remove the element at the given index from the array and return the removed element.
+        Remove the element at the given index from the array and return the 
+        removed element.
         If there is no such element, leave the array unchanged and return None.
         Time complexity for full marks: O(N)
         """
         element = None
+        offsetIndex = index + self._start
 
-        if index < self._size:
-            element = self._data[index]
+        if offsetIndex >= self._start and offsetIndex <= self._end:
+            element = self._data[offsetIndex]
 
             # Replace element with following one, and repeat for all following
             # elements.
-            while index < (self._size - 1):
-                self._data[index] = self._data[index + 1]
-                index++
+            while offsetIndex <= self._end :
+                self._data[offsetIndex] = self._data[offsetIndex + 1]
+                offsetIndex += 1
 
             # After all elements have been shifted, element at border of size
             # has been copied down and needs to be set to None.
-            self._data[self._size] = None
+            self._data[self._end] = None
 
-            self._size--
+            self._end -= 1
 
         return element
 
@@ -154,7 +194,7 @@ class DynamicArray:
         """
         empty = False
 
-        if self._size == 0:
+        if self._start == self._end:
             empty = True
 
         return empty
@@ -166,17 +206,17 @@ class DynamicArray:
         """
         full = False
         
-        if self._size == self._capacity:
+        if self._start == 0 or self._end == (self._capacity - 1): # -1 for index
             full = True
 
-        return True
+        return full
 
     def get_size(self) -> int:
         """
         Return the number of elements in the list
         Time complexity for full marks: O(1)
         """
-        return self._size
+        return self._end - self._start + 1
 
     def get_capacity(self) -> int:
         """
@@ -190,4 +230,54 @@ class DynamicArray:
         Sort elements inside _data based on < comparisons.
         Time complexity for full marks: O(NlogN)
         """
-        pass
+        if self.get_size() < 2:
+            return # List is already sorted.
+
+        # Copy logical array to new list to make indexing easier.
+        offset = self._start
+        dataCopy = [None] * self.get_size()
+
+        for index in range(self.get_size()):
+            dataCopy[index] = self._data[index + offset]
+
+        middle = self.get_size() // 2
+
+        size1 = middle
+        size2 = self.get_size() - middle
+
+        # Declare two new arrays for old array to be split in half into.
+        list1 = [None] * size1
+        list2 = [None] * size2
+
+        # Variables for array traversal.
+        cursor = 0
+        i = j = 0
+
+        # Copy first half of logical array to list1.
+        while i < size1:
+            list1[i] = dataCopy[cursor]
+            i += 1
+            cursor += 1
+
+        # Copy second half of logical array to list2.
+        while j < size2:
+            list2[j] = dataCopy[cursor]
+            j += 1
+            cursor += 1
+
+        # Sort two halves recursively.
+        self.sort(list1)
+        self.sort(list2)
+
+        # Merge results.
+        self.merge(list1, list2, dataCopy)
+            
+
+    def merge(self, list1: list, list2: list) -> list:
+        """
+        Merge two sorted lists together, with the merged lists also being
+        sorted.
+        """
+        i = j = 0
+
+        while i + j < 
