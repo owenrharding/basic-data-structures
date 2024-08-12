@@ -110,7 +110,7 @@ def test_dynamic_array():
     print("Initialising Dynamic Array...")
     arr = DynamicArray()
     if arr is not None:
-        print("  -> Successfully initialised.")
+        print("  -> Successfully initialised." + '\n')
 
 ##### APPEND TEST ##############################################################
     appending = ['a', 'b', 'c', 'd', 'e']
@@ -122,10 +122,8 @@ def test_dynamic_array():
     
     for element in appending:
         arr.append(element)
-        print("  -> Successfully appended", '\'' + element + '\'.')
 
-    print("Current array:")
-    print(str(arr))
+    print(" -> Current array:", str(arr) + '\n')
 
 ##### PREPEND TEST #############################################################
     prepending = ['1', '2', '3']
@@ -137,10 +135,18 @@ def test_dynamic_array():
 
     for element in prepending:
         arr.prepend(element)
-        print("  -> Successfully prepended", '\'' + element + '\'.')
 
-    print("Current array:")
-    print(str(arr))
+    print(" -> Current array:", str(arr) + '\n')
+
+##### SORT TEST ################################################################
+    print("Sorting array...")
+    arr.sort()
+    print(" -> Current array:", str(arr) + '\n')
+
+##### REVERSE TEST #############################################################
+    print("Reversing array...")
+    arr.reverse()
+    print(" -> Current array:", str(arr) + '\n')
 
 def test_bitvector():
     """

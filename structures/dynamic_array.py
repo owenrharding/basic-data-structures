@@ -22,9 +22,10 @@ class DynamicArray:
         via the str() method.
         """
         currentArray = []
-        index = self._start
-        while index <= self._end:
-            currentArray.append(str(self._data[index]))
+        index = 0
+        while index < self.get_size():
+            newIndex = self.get_index(index) + self._start
+            currentArray.append(str(self._data[newIndex]))
             index += 1
         return ', '.join(currentArray)
 
@@ -55,6 +56,17 @@ class DynamicArray:
         self._data = dataCopy
         self._start = newStart
         self._end = newEnd
+    
+    def get_index(self, trueIndex: int) -> int:
+        """
+        Converts a desired index into an index that considers reversing.
+        """
+        index = trueIndex
+
+        if self._reverse:
+            index = self.get_size() - trueIndex - 1
+        
+        return index
 
     def get_at(self, index: int) -> Any | None:
         """
@@ -62,6 +74,9 @@ class DynamicArray:
         Return None if index is out of bounds.
         Time complexity for full marks: O(1)
         """
+        # Adjust index in case of reversal.
+        index = self.get_index(index)
+
         element = None
         offsetIndex = index + self._start
 
@@ -75,6 +90,9 @@ class DynamicArray:
         Same as get_at.
         Allows to use square brackets to index elements.
         """
+        # Adjust index in case of reversal.
+        index = self.get_index(index)
+
         element = None
         offsetIndex = index + self._start
 
@@ -89,6 +107,9 @@ class DynamicArray:
         Do not modify the list if the index is out of bounds.
         Time complexity for full marks: O(1)
         """
+        # Adjust index in case of reversal.
+        index = self.get_index(index)
+
         offsetIndex = index + self._start
         
         if offsetIndex >= self._start and offsetIndex <= self._end:
@@ -99,6 +120,9 @@ class DynamicArray:
         Same as set_at.
         Allows to use square brackets to index elements.
         """
+        # Adjust index in case of reversal.
+        index = self.get_index(index)
+
         offsetIndex = index + self._start
 
         if offsetIndex >= self._start and offsetIndex <= self._end:
@@ -230,54 +254,82 @@ class DynamicArray:
         Sort elements inside _data based on < comparisons.
         Time complexity for full marks: O(NlogN)
         """
-        if self.get_size() < 2:
-            return # List is already sorted.
-
         # Copy logical array to new list to make indexing easier.
-        offset = self._start
         dataCopy = [None] * self.get_size()
 
+        offset = self._start
         for index in range(self.get_size()):
             dataCopy[index] = self._data[index + offset]
 
-        middle = self.get_size() // 2
+        self.merge_sort(dataCopy)
 
-        size1 = middle
-        size2 = self.get_size() - middle
+        # Copy contents of dataCopy back into self._data.
+        # self._start and self._end remain the same.
+        for index in range(self.get_size()):
+            self._data[index + offset] = dataCopy[index]
+            
+    def merge_sort(self, S: list):
+        """
+        Sorts the elements of given list using merge-sort algorithm.
+        """
+        arrSize = self.len(S)
 
-        # Declare two new arrays for old array to be split in half into.
-        list1 = [None] * size1
-        list2 = [None] * size2
+        if arrSize < 2:
+            return # List is already sorted.
+        
+        # Determine splitting point of S.
+        mid = arrSize // 2
 
-        # Variables for array traversal.
+        # Variables for array traversing.
         cursor = 0
         i = j = 0
 
-        # Copy first half of logical array to list1.
-        while i < size1:
-            list1[i] = dataCopy[cursor]
+        # Copy first half of S into S1.
+        S1 = [None] * mid
+        while i < mid:
+            S1[i] = S[cursor]
+            cursor += 1
             i += 1
-            cursor += 1
 
-        # Copy second half of logical array to list2.
-        while j < size2:
-            list2[j] = dataCopy[cursor]
+        # Copy second half of S into S2
+        S2 = [None] * (arrSize - mid)
+        while j < (arrSize - mid):
+            S2[j] = S[cursor]
+            cursor += 1
             j += 1
-            cursor += 1
-
-        # Sort two halves recursively.
-        self.sort(list1)
-        self.sort(list2)
+        
+        # Conquer (with recursion).
+        self.merge_sort(S1)
+        self.merge_sort(S2)
 
         # Merge results.
-        self.merge(list1, list2, dataCopy)
-            
+        self.merge(S1, S2, S)
 
-    def merge(self, list1: list, list2: list) -> list:
+    def merge(self, S1: list, S2: list, S: list) -> list:
         """
         Merge two sorted lists together, with the merged lists also being
         sorted.
         """
         i = j = 0
 
-        while i + j < 
+        size1 = self.len(S1)
+        size2 = self.len(S2)
+        sizeS = self.len(S)
+        
+        while i + j < sizeS:
+            if j == size2 or (i < size1 and S1[i] < S2[j]):
+                S[i + j] = S1[i]
+                i += 1
+            else:
+                S[i + j] = S2[j]
+                j += 1
+    
+    def len(self, array: list) -> int:
+        """
+        Returns the length of a python list.
+        """
+        size = 0
+        for element in array:
+            size += 1
+        
+        return size
