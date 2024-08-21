@@ -150,7 +150,7 @@ class DoublyLinkedList:
         """
         data = None
         if self.get_tail_node() is not None:
-            data = self.get_tail_node.get_data()
+            data = self.get_tail_node().get_data()
         return data
 
     def set_tail(self, data: Any) -> None:
@@ -252,7 +252,6 @@ class DoublyLinkedList:
             self.mod_size(-1)
 
         return data
-
 
     def remove_from_back(self) -> Any | None:
         """

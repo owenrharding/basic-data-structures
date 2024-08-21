@@ -193,6 +193,63 @@ def test_bitvector():
     """
     print ("==== Executing Bit Vector Tests ====")
 
+    ##### INITIALISE TEST ##########################################################
+    print("Initialising BitVector...")
+    bv = BitVector()
+    if bv is not None:
+        print("  -> Successfully initialised." + '\n')
+
+    ##### APPEND TEST ##############################################################
+    print("======== APPENDING ========")
+    appending = [1, 1, 0]
+    print("Appending the elements:", end=" ")
+    for index, element in enumerate(appending):
+        if index is not (len(appending) - 1):
+            print('\'' + str(element) + '\',', end=" ")
+    print('\'' + str(appending[-1]) + '\'...')
+    
+    for element in appending:
+        bv.append(element)
+    
+    print(" -> Current bitvector:", str(bv) + '\n')
+
+    ##### PREPEND TEST ##############################################################
+    print("======== PREPENDING ========")
+    prepending = [0, 1, 1, 0, 0]
+    print("Prepending the elements:", end=" ")
+    for index, element in enumerate(prepending):
+        if index is not (len(prepending) - 1):
+            print('\'' + str(element) + '\',', end=" ")
+    print('\'' + str(prepending[-1]) + '\'...')
+    
+    for element in prepending:
+        bv.prepend(element)
+    
+    print(" -> Current bitvector:", str(bv) + '\n')
+
+    ##### REVERSE TEST ##############################################################
+    print("==== REVERSING BITVECTOR ====")
+    bv.reverse()
+    print(" -> Current bitvector:", str(bv) + '\n')
+
+    revPrep = 1
+    print("Prepending the element:", revPrep)
+    bv.prepend(revPrep)
+    print(" -> Current bitvector:", str(bv) + '\n')
+
+    revApp = 0
+    print("Appending the element:", revApp)
+    bv.append(revApp)
+    print(" -> Current bitvector:", str(bv) + '\n')
+
+    print("==== REVERSING BITVECTOR ====")
+    bv.reverse()
+    print(" -> Current bitvector:", str(bv) + '\n')
+
+    ##### FLIP TEST ##############################################################
+    print("==== FLIPPING BITVECTOR ====")
+    bv.flip_all_bits()
+    print(" -> Current bitvector:", str(bv) + '\n')
 
 
 # The actual program we're running here

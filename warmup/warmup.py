@@ -31,6 +31,7 @@ problems. Or maybe not. We did it for you just in case.
 from structures.bit_vector import BitVector
 from structures.dynamic_array import DynamicArray
 from structures.linked_list import DoublyLinkedList, Node
+import math
 
 
 def main_character(instring: list[int]) -> int:
@@ -55,7 +56,26 @@ def main_character(instring: list[int]) -> int:
     main_character([7, 1, 2, 7]) == 3
     main_character([60000, 120000, 654321, 999, 1337, 133731337]) == -1
     """
+    bv = BitVector()
+    bv._init_zeroes(2**32)
 
+    # By default position of a repeated character is -1.
+    pos = -1
+
+    for index, element in enumerate(instring):
+        if bv.get_size() < element:
+            bv._init_unset_space(element)
+
+        if bv.get_at(element) != 0:
+            pos = index
+            break
+        else:
+            # Set it so that there exists an element at the index of the value
+            # of the element. Next time that this index is checked, it will not
+            # none so we will have found a match.
+            bv.set_at(element)
+    
+    return pos
 
 def missing_odds(inputs: list[int]) -> int:
     """
@@ -82,10 +102,53 @@ def missing_odds(inputs: list[int]) -> int:
     missing_odds([4, 1]) == 3
     missing_odds([4, 1, 8, 5]) == 10    # 3 and 7 are missing
     """
+    da = DynamicArray()
 
-    # YOUR CODE GOES HERE
-    pass
+    # Initialise space equal to the length of the given input list to save
+    # having to continuously resize.
+    da._init_size(len(inputs), None)
 
+    # Copy inputs to dynamic array to allow for sorting. Linear time.
+    for index, element in enumerate(inputs):
+        da[index] = element
+    
+    #print("Here's the original inputs:", inputs)
+    #print("Sorting the inputs...", end=" ")
+    # Sort dynamic array. nlog(n) time.
+    da.sort()
+    #print("Done. It's now:\n", str(da))
+
+    nextExpectedOdd = None
+    if da[0] % 2 == 0:
+        # Smallest element is even.
+        nextExpectedOdd = da[0] + 1
+    else:
+        # Smallest element is odd.
+        nextExpectedOdd = da[0] + 2
+
+    total = 0
+    for i in range(len(inputs)):
+        #print("Currently at", da[i], "and I'm searching for", nextExpectedOdd, end=". ")
+        if da[i] == nextExpectedOdd:
+            # Next expected odd is in the array, don't add it to the total and
+            # start searching for the next largest odd.
+            nextExpectedOdd += 2
+            #print("Found it, moving on.")
+        elif da[i] < nextExpectedOdd:
+            # The odd we're searching for may still appear to the right of the
+            # current cursor.
+            #print("It could still be in here. Moving on.")
+            continue
+        else:
+            # We've moved past the point where the odd we're searching for can
+            # appear in the array, so inputs must not contain it.
+            total += nextExpectedOdd
+            nextExpectedOdd += 2
+            #print("It can't have been in here. Adding to the total.")
+    
+    #print("=== I got", total, "as the total!")
+    
+    return total
 
 def k_cool(k: int, n: int) -> int:
     """

@@ -57,6 +57,21 @@ class DynamicArray:
         self._start = newStart
         self._end = newEnd
     
+    def _init_size(self, size: int, initData: Any) -> None:
+        """
+        Initialises dynamic array to set size. Not for use with prepending
+        as does not account for buffer initialisation before the logical
+        start of the array.
+        """
+        # Double list capacity.
+        self._capacity = size
+
+        # Set new DynamicArray data.
+        self._data = [initData] * self._capacity
+        self._start = 0
+        self._end = size - 1
+
+    
     def get_index(self, trueIndex: int) -> int:
         """
         Converts a desired index into an index that considers reversing.
@@ -90,16 +105,7 @@ class DynamicArray:
         Same as get_at.
         Allows to use square brackets to index elements.
         """
-        # Adjust index in case of reversal.
-        index = self.get_index(index)
-
-        element = None
-        offsetIndex = index + self._start
-
-        if offsetIndex >= self._start and offsetIndex <= self._end:
-            element = self._data[offsetIndex]
-
-        return element
+        return self.get_at(index)
 
     def set_at(self, index: int, element: Any) -> None:
         """
@@ -115,20 +121,12 @@ class DynamicArray:
         if offsetIndex >= self._start and offsetIndex <= self._end:
             self._data[offsetIndex] = element
 
-        return element
-
     def __setitem__(self, index: int, element: Any) -> None:
         """
         Same as set_at.
         Allows to use square brackets to index elements.
         """
-        # Adjust index in case of reversal.
-        index = self.get_index(index)
-
-        offsetIndex = index + self._start
-
-        if offsetIndex >= self._start and offsetIndex <= self._end:
-            self._data[offsetIndex] = element
+        return self.set_at(index, element)
 
     def append(self, element: Any) -> None:
         """
@@ -136,14 +134,14 @@ class DynamicArray:
         Time complexity for full marks: O(1*) (* means amortized)
         """
         # Resize if there is no remaining space for element to be appended.
-        if self.is_full():
+        if self._end + 1 == self._capacity:
             self.__resize()
         
-        # Set element at next available index.
-        self._data[self._end + 1] = element
-
         # Increase array size.
         self._end += 1
+
+        # Set element at next available index.
+        self._data[self._end] = element
 
     def prepend(self, element: Any) -> None:
         """
@@ -151,14 +149,14 @@ class DynamicArray:
         Time complexity for full marks: O(1*)
         """
         # Resize if there is no remaining space for element to be appended.
-        if self.is_full():
+        if self._start == 0:
             self.__resize()
         
-        # Set element at next available index.
-        self._data[self._start - 1] = element
-
         # Increase array size.
         self._start -= 1
+
+        # Set element at next available index.
+        self._data[self._start] = element
 
     def reverse(self) -> None:
         """
@@ -201,7 +199,7 @@ class DynamicArray:
 
             # Replace element with following one, and repeat for all following
             # elements.
-            while offsetIndex <= self._end :
+            while offsetIndex < self._end:
                 self._data[offsetIndex] = self._data[offsetIndex + 1]
                 offsetIndex += 1
 
@@ -218,24 +216,14 @@ class DynamicArray:
         Boolean helper to tell us if the structure is empty or not
         Time complexity for full marks: O(1)
         """
-        empty = False
-
-        if self._start == self._end:
-            empty = True
-
-        return empty
+        return self._end < self._start
 
     def is_full(self) -> bool:
         """
         Boolean helper to tell us if the structure is full or not
         Time complexity for full marks: O(1)
         """
-        full = False
-        
-        if self._start == 0 or self._end == (self._capacity - 1): # -1 for index
-            full = True
-
-        return full
+        return self.get_size() == self._capacity
 
     def get_size(self) -> int:
         """
