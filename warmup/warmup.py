@@ -102,63 +102,37 @@ def missing_odds(inputs: list[int]) -> int:
     missing_odds([4, 1]) == 3
     missing_odds([4, 1, 8, 5]) == 10    # 3 and 7 are missing
     """
-    print_debug_on = True
-    da = DynamicArray()
+    max, min = inputs[0], inputs[0]
+    inputSumOfOdds = 0
 
-    # Initialise space equal to the length of the given input list to save
-    # having to continuously resize.
-    da._init_size(len(inputs), None)
+    for element in inputs:
+        # Determine max and min elements in the list.
+        if element > max:
+            max = element
+        elif element < min:
+            min = element
+        
+        if element % 2 == 1:
+            # Element is odd.
+            inputSumOfOdds += element
 
-    # Copy inputs to dynamic array to allow for sorting. Linear time.
-    for index, element in enumerate(inputs):
-        da[index] = element
-    
-    if print_debug_on:
-        print("Here's the original inputs:", inputs)
-        print("Sorting the inputs...", end=" ")
-    # Sort dynamic array. nlog(n) time.
-    da.sort()
-    if print_debug_on:
-        print("Done. It's now:\n", str(da))
+    # Determine if min and max are odd.
+    a, b = min, max
+    if min % 2 == 0:
+        # Min is even, start at odd number immediately following max.
+        a = min + 1
+    if max % 2 == 0:
+        # Max is even, end at odd number immediately preceding max.
+        b = max - 1
 
-    nextExpectedOdd = None
-    if da[0] % 2 == 0:
-        # Smallest element is even.
-        nextExpectedOdd = da[0] + 1
-    else:
-        # Smallest element is odd.
-        nextExpectedOdd = da[0] + 2
+    # Calculate what sum of all odds (with none missing) should've been.
+    expectedNumOdds = (b - a) / 2 + 1
 
-    total = 0
-    for i in range(len(inputs)):
-        if da[i] == nextExpectedOdd:
-            # Next expected odd is in the array, don't add it to the total and
-            # start searching for the next largest odd.
-            nextExpectedOdd += 2
-            if print_debug_on:
-                print("Currently at", da[i], "and I'm searching for", nextExpectedOdd, end=". ")
-                print("Found it, moving on.")
-        elif da[i] % 2 == 0 and da[i] < nextExpectedOdd:
-            # The odd we're searching for may still appear to the right of the
-            # current cursor.
-            if print_debug_on:
-                print("Currently at", da[i], "and I'm searching for", nextExpectedOdd, end=". ")
-                print("It could still be in here. Moving on.")
-            continue
-        else:
-            # We've moved past the point where the odd we're searching for can
-            # appear in the array, so inputs must not contain it.
-            while nextExpectedOdd < da[i]:
-                if print_debug_on:
-                    print("Currently at", da[i], "and I'm searching for", nextExpectedOdd, end=". ")
-                    print(nextExpectedOdd, "can't have been in here, adding it to the total.")
-                total += nextExpectedOdd
-                nextExpectedOdd += 2
-    
-    if print_debug_on:
-        print("=== I got", total, "as the total!")
-    
-    return total
+    expectedSumOfOdds = ((expectedNumOdds) / 2) * (a + b)
+
+    # Sum of missing odds = expected sum of odds - sum of existing odds.
+    return int(expectedSumOfOdds - inputSumOfOdds)
+
 
 def k_cool(k: int, n: int) -> int:
     """
@@ -226,9 +200,45 @@ def number_game(numbers: list[int]) -> tuple[str, int]:
     The same happens on the next move.
     So, nobody picks any numbers to increase their score, which results in a Tie with both players having scores of 0.
     """
+    da = DynamicArray()
 
-    # YOUR CODE GOES HERE
-    pass
+    # Initialise space for the array.
+    da._init_size(len(numbers), None)
+
+    # Copy numbers over to dynamic array.
+    for index, element in enumerate(numbers):
+        da[index] = element
+    
+    # Sort dynamic array.
+    da.sort()
+    
+    # Arrange in descending order.
+    da.reverse()
+
+    aliceScore, bobScore = 0, 0
+
+    aliceTurn = True
+    for i in range(len(numbers)):
+        if aliceTurn:
+            if da[i] % 2 == 0:
+                # Even number.
+                aliceScore += da[i]
+        else:
+            if da[i] % 2 == 1:
+                # Odd number.
+                bobScore += da[i]
+
+        aliceTurn = not aliceTurn
+    
+    result = None
+    if aliceScore > bobScore:
+        result = ("Alice", aliceScore)
+    elif bobScore > aliceScore:
+        result = ("Bob", bobScore)
+    else:
+        result = ("Tie", aliceScore)
+    
+    return result
 
 
 def road_illumination(road_length: int, poles: list[int]) -> float:
