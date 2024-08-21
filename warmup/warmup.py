@@ -102,6 +102,7 @@ def missing_odds(inputs: list[int]) -> int:
     missing_odds([4, 1]) == 3
     missing_odds([4, 1, 8, 5]) == 10    # 3 and 7 are missing
     """
+    print_debug_on = True
     da = DynamicArray()
 
     # Initialise space equal to the length of the given input list to save
@@ -112,11 +113,13 @@ def missing_odds(inputs: list[int]) -> int:
     for index, element in enumerate(inputs):
         da[index] = element
     
-    #print("Here's the original inputs:", inputs)
-    #print("Sorting the inputs...", end=" ")
+    if print_debug_on:
+        print("Here's the original inputs:", inputs)
+        print("Sorting the inputs...", end=" ")
     # Sort dynamic array. nlog(n) time.
     da.sort()
-    #print("Done. It's now:\n", str(da))
+    if print_debug_on:
+        print("Done. It's now:\n", str(da))
 
     nextExpectedOdd = None
     if da[0] % 2 == 0:
@@ -128,25 +131,32 @@ def missing_odds(inputs: list[int]) -> int:
 
     total = 0
     for i in range(len(inputs)):
-        #print("Currently at", da[i], "and I'm searching for", nextExpectedOdd, end=". ")
         if da[i] == nextExpectedOdd:
             # Next expected odd is in the array, don't add it to the total and
             # start searching for the next largest odd.
             nextExpectedOdd += 2
-            #print("Found it, moving on.")
-        elif da[i] < nextExpectedOdd:
+            if print_debug_on:
+                print("Currently at", da[i], "and I'm searching for", nextExpectedOdd, end=". ")
+                print("Found it, moving on.")
+        elif da[i] % 2 == 0 and da[i] < nextExpectedOdd:
             # The odd we're searching for may still appear to the right of the
             # current cursor.
-            #print("It could still be in here. Moving on.")
+            if print_debug_on:
+                print("Currently at", da[i], "and I'm searching for", nextExpectedOdd, end=". ")
+                print("It could still be in here. Moving on.")
             continue
         else:
             # We've moved past the point where the odd we're searching for can
             # appear in the array, so inputs must not contain it.
-            total += nextExpectedOdd
-            nextExpectedOdd += 2
-            #print("It can't have been in here. Adding to the total.")
+            while nextExpectedOdd < da[i]:
+                if print_debug_on:
+                    print("Currently at", da[i], "and I'm searching for", nextExpectedOdd, end=". ")
+                    print(nextExpectedOdd, "can't have been in here, adding it to the total.")
+                total += nextExpectedOdd
+                nextExpectedOdd += 2
     
-    #print("=== I got", total, "as the total!")
+    if print_debug_on:
+        print("=== I got", total, "as the total!")
     
     return total
 
