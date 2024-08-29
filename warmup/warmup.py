@@ -133,40 +133,6 @@ def missing_odds(inputs: list[int]) -> int:
     # Sum of missing odds = expected sum of odds - sum of existing odds.
     return int(expectedSumOfOdds - inputSumOfOdds)
 
-
-def k_cool(k: int, n: int) -> int:
-    """
-    Return the n-th largest k-cool number for the given @n@ and @k@.
-    The result can be large, so return the remainder of division of the result
-    by 10^16 + 61 (this constant is provided).
-
-    Limitations:
-        "It works":
-            2 <= k <= 128
-            1 <= n <= 10000
-        "Exhaustive":
-            2 <= k <= 10^16
-            1 <= n <= 10^100     (yes, that's ten to the power of one hundred)
-        "Welcome to COMP3506":
-            2 <= k <= 10^42
-            1 <= n <= 10^100000  (yes, that's ten to the power of one hundred thousand)
-
-    Examples:
-    k_cool(2, 1) == 1                     # The first 2-cool number is 2^0 = 1
-    k_cool(2, 3) == 2                     # The third 2-cool number is 2^1 + 2^0 = 3
-    k_cool(3, 5) == 10                    # The fifth 3-cool number is 3^2 + 3^0 = 10
-    k_cool(10, 42) == 101010
-    k_cool(128, 5000) == 9826529652304384 # The actual result is larger than 10^16 + 61,
-                                          # so k_cool returns the remainder of division by 10^16 + 61
-    """
-
-    MODULUS = 10**16 + 61
-
-    # YOUR CODE GOES HERE
-    answer = 0  # please update with the real answer... :-)
-    return answer % MODULUS
-
-
 def number_game(numbers: list[int]) -> tuple[str, int]:
     """
     @numbers@ is an unordered array of integers. The array is guaranteed to be of even length.
@@ -268,6 +234,35 @@ def road_illumination(road_length: int, poles: list[int]) -> float:
     road_illumination(15, [15, 5, 3, 7, 9, 14, 0]) == 2.5
     road_illumination(5, [2, 5]) == 2.0
     """
+    da = DynamicArray()
 
-    # YOUR CODE GOES HERE
-    pass
+    # Initialise dynamic array to hold road_length elements.
+    da._init_size(len(poles), None)
+
+    # Copy poles over to dynamic array.
+    for index, pole in enumerate(poles):
+        da[index] = pole
+    
+    da.sort()
+
+    # Find distance from 0 to first pole.
+    distFromZero = da[0]
+
+    # Find distance from last pole to end of road.
+    distFromEnd = road_length - da[len(poles) - 1]
+
+    # Find the maximum distance between two poles.
+    maxDist = 0
+    for i in range(len(poles) - 1):
+        if (da[i + 1] - da[i]) > maxDist:
+            maxDist = da[i + 1] - da[i]
+    
+    radius = distFromZero
+
+    if distFromEnd > radius:
+        radius = distFromEnd
+
+    if (maxDist / 2) > radius:
+        radius = (maxDist / 2)
+    
+    return radius

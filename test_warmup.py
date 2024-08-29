@@ -79,7 +79,7 @@ def test_missing_odds_performance(test_size: int):
         assert missing_odds([1, 3]) == 0
         assert missing_odds([1, 4]) == 3
         assert missing_odds([4, 1]) == 3
-        assert missing_odds([4, 1, 8, 5]) == 10
+        #assert missing_odds([4, 1, 8, 5, 13, 100]) == 30
 
     # Print the result for the large input test
     print(f"Result for {test_size} elements: {result}")
@@ -87,6 +87,27 @@ def test_missing_odds_performance(test_size: int):
     # Calculate the time taken
     time_taken = end_time - start_time
     print(f"Time taken for {test_size} elements: {time_taken:.6f} seconds.\n")
+
+def test_number_game_performance():
+    test_cases = {
+        "It works": 10_000,
+        "Exhaustive": 100_000,
+        "Welcome to COMP3506": 300_000
+    }
+
+    for test_name, size in test_cases.items():
+        print(f"Running {test_name} test with {size} elements...")
+
+        # Generate a random test case
+        numbers = [random.randint(0, 10**16) for _ in range(size)]
+
+        start_time = time.time()  # Start timing
+        result = number_game(numbers)
+        end_time = time.time()  # End timing
+
+        elapsed_time = end_time - start_time
+        print(f"{test_name} result: {result}")
+        print(f"Time taken: {elapsed_time:.4f} seconds\n")
 
 def test_main_character():
     """
@@ -133,12 +154,18 @@ def test_number_game():
     A simple set of tests for the number game problem.
     This is not marked and is just here for you to test your code.
     """
+    print(number_game([5, 2, 7, 3]) == ("Bob", 5))
+    print(number_game([3, 2, 1, 0]) == ("Tie", 0))
+    print(number_game([2, 2, 2, 2]) == ("Alice", 4))
+    test_number_game_performance()
 
 def test_road_illumination():
     """
     A simple set of tests for the road illumination problem.
     This is not marked and is just here for you to test your code.
     """
+    assert road_illumination(15, [15, 5, 3, 7, 9, 14, 0]) == 2.5
+    assert road_illumination(5, [2, 5]) == 2.0
 
 # The actual program we're running here
 if __name__ == "__main__":

@@ -231,8 +231,8 @@ class DoublyLinkedList:
             oldHead = self.get_head_node()
 
             # Remove reference to original head.
-            if oldHead.get_next() is not None:
-                newHead = oldHead.get_next()
+            if oldHead.get_next(self._reverse) is not None:
+                newHead = oldHead.get_next(self._reverse)
                 newHead.set_prev(None, self._reverse)
                 # Set new head.
                 if self._reverse is not True:

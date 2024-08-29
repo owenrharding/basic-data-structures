@@ -104,8 +104,8 @@ def test_dynamic_array():
     A simple set of tests for the dynamic array implementation.
     This is not marked and is just here for you to test your code.
     """
-    print ("==== Executing Dynamic Array Tests ====")
-    
+    print("==== Executing Dynamic Array Tests ====")
+
 ##### INITIALISE TEST ##########################################################
     print("Initialising Dynamic Array...")
     arr = DynamicArray()
@@ -136,11 +136,6 @@ def test_dynamic_array():
     for element in prepending:
         arr.prepend(element)
 
-    print(" -> Current array:", str(arr) + '\n')
-
-##### SORT TEST ################################################################
-    print("Sorting array...")
-    arr.sort()
     print(" -> Current array:", str(arr) + '\n')
 
 ##### REVERSE TEST #############################################################
@@ -178,13 +173,72 @@ def test_dynamic_array():
     arr.reverse()
     print(" -> Current array:", str(arr) + '\n')
 
+##### FINAL REVERSE AND SORT TEST ##############################################
     print("Sorting array...")
-    arr.sort()
+    arr.sort()  # Assuming you have a sort function implemented
     print(" -> Current array:", str(arr) + '\n')
 
     print("Reversing array back to unreversed...")
     arr.reverse()
     print(" -> Current array:", str(arr) + '\n')
+
+##### EDGE CASE TESTS FOR REVERSE ##############################################
+    print("Testing edge cases for reverse function...")
+
+    # Empty array
+    empty_arr = DynamicArray()
+    empty_arr.reverse()
+    assert str(empty_arr) == "", "Failed on empty array"
+    print("  -> Empty array reversed successfully.")
+
+    # Single element array
+    single_arr = DynamicArray()
+    single_arr.append('1')
+    print(single_arr.get_at(0))
+    single_arr.reverse()
+    print(single_arr.get_at(0))
+    assert str(single_arr) == "1", "Failed on single element array"
+    print("  -> Single element array reversed successfully.")
+
+    # Single element array
+    new_single_arr = DynamicArray()
+    new_single_arr.prepend('1')
+    print(new_single_arr.get_at(0))
+    new_single_arr.reverse()
+    print("Reverse on")
+    print(new_single_arr.get_at(0))
+    new_single_arr.prepend('2')
+    print(str(new_single_arr))
+    print(new_single_arr.get_at(0))
+    assert str(single_arr) == "1", "Failed on single element array"
+    print("  -> Single element array reversed successfully.")
+
+    # Two element array
+    two_element_arr = DynamicArray()
+    two_element_arr.append('a')
+    print(two_element_arr.get_at(0))
+    print(two_element_arr.get_at(1))
+    two_element_arr.append('b')
+    print(str(two_element_arr))
+    print(two_element_arr.get_at(1))
+    print(two_element_arr.get_at(2))
+    two_element_arr.reverse()
+    assert str(two_element_arr) == "b, a", "Failed on two element array"
+    print("  -> Two element array reversed successfully.")
+
+    # Multiple consecutive reverses
+    consecutive_arr = DynamicArray()
+    consecutive_arr.append('x')
+    consecutive_arr.append('y')
+    consecutive_arr.append('z')
+    consecutive_arr.reverse()
+    consecutive_arr.reverse()
+    assert str(consecutive_arr) == "x, y, z", "Failed on multiple consecutive reverses"
+    print("  -> Multiple consecutive reverses handled successfully.")
+
+    print(" -> All edge cases for reverse function passed.\n")
+
+    print("==== Dynamic Array Tests Completed ====")
 
 def test_bitvector():
     """
